@@ -56,3 +56,38 @@ def joinNumbers(firstNumber, lastNumber, separator):
 
 testEqual(joinNumbers(5, 8, ", "), "5, 6, 7, 8")
 testEqual(joinNumbers(5, 8, "-"), "5-6-7-8")
+
+print "---"
+
+def multiplyString(string, number):
+    n = 0
+    accumulator = ""
+    while n < number:
+        accumulator = accumulator + string
+        n = n + 1
+    return accumulator
+
+testEqual(multiplyString("a", 3), "aaa")
+
+# Problem: print one 'fir-tree' level.
+
+def makeTreeLevel(spaceNumber, symbolNumber, symbol):
+    return multiplyString(" ", spaceNumber) + multiplyString(symbol, symbolNumber)
+
+testEqual(makeTreeLevel(4, 3, "^"), "    ^^^")
+
+# Problem: print full 'fir-tree' with a symbol.
+
+def printFirTree(symbol, level):
+    n = 0
+    symbolNumber = 1
+    spaceNumber = level - 1
+    while n < level:
+        print makeTreeLevel(spaceNumber, symbolNumber, symbol)
+        spaceNumber = spaceNumber - 1
+        symbolNumber = symbolNumber + 2
+        n = n + 1
+
+level = 20
+print multiplyString(" ", level - 1) + "*"
+printFirTree("^", level)
