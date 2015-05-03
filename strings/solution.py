@@ -1,9 +1,12 @@
 #!/usr/bin/python
 
+# The string is a value.
 s = "asdf"
+# The '+' operator for strings is a concatenation operator.
 s2 = s + "123"
 print s2
 
+# Problem: print half 'fir-tree' with a symbol.
 def tree(floorNumber, symbol):
     n = 1
     floor = ""
@@ -12,9 +15,9 @@ def tree(floorNumber, symbol):
         print floor
         n = n + 1
 
+tree(10, "^")
 
-tree(10, "3")
-
+print "---"
 
 def testEqual(actualResult, expectedResult):
    if actualResult == expectedResult:
@@ -22,8 +25,7 @@ def testEqual(actualResult, expectedResult):
    else:
       print "failed, expected " + str(expectedResult) + ", returned " + str(actualResult)
 
-print "---"
-
+# Problem: Convert number to string.
 def stringFromNumber(number):
     if number == 0:
         string = str(number)
@@ -40,6 +42,7 @@ testEqual(stringFromNumber(0), "0")
 
 print "---"
 
+# Problem: join list of numbers with a string
 def joinNumbers(firstNumber, lastNumber, separator):
     number = firstNumber
     string = ""
