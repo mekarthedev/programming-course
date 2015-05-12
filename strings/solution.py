@@ -91,3 +91,44 @@ def printFirTree(symbol, level):
 level = 20
 print multiplyString(" ", level - 1) + "*"
 printFirTree("^", level)
+
+print "---"
+
+# Problem: evaluate a simple math expression "2+2"
+
+def calculate(number1, number2, operator):
+    if operator == "+":
+        result = number1 + number2
+    elif operator == "*":
+        result = number1 * number2
+    else:
+        result = None
+    return result
+
+testEqual(calculate(2, 3, "*"), 6)
+
+def parse(expression):
+    size = len(expression)
+    index = 0
+    operator = " "
+    number1 = 0
+    number2 = 0
+    while index < size:
+        if 47 < ord(expression[index]) and ord(expression[index]) < 58:
+            character = int(expression[index])
+            if operator == " ":
+                number1 = number1 * 10 + character
+            else:
+                number2 = number2 * 10 + character
+        else:
+            operator = expression[index]
+        index = index + 1
+    return number1, number2, operator
+
+testEqual(parse("2*3"), (2, 3, "*"))
+
+def evaluate(expression):
+    number1, number2, operator = parse(expression)
+    return calculate(number1, number2, operator)
+
+testEqual(evaluate("2*3"), 6)
