@@ -224,3 +224,190 @@ def callFunc(function, param):
    return function(param)
 
 print callFunc(add1, 42)
+
+def enumerate(count, processNumber):
+   i = 0
+   while i < count:
+      processNumber(i)
+      i = i + 1
+
+def printNumber(number):
+   print number
+
+enumerate(5, printNumber)
+
+print "---"
+
+def fromNumberToNumber(firstNumber, lastNumber, processNumber):
+   n = firstNumber
+   while n <= lastNumber:
+      processNumber(n)
+      n = n + 1
+
+fromNumberToNumber(2, 5, printNumber)
+
+print "---"
+
+def reduce(firstNumber, lastNumber, calculate):
+   number = firstNumber
+   accumulator = 0
+   while number <= lastNumber:
+      accumulator = calculate(accumulator, number)
+      number = number + 1
+   return accumulator
+
+def add(number1, number2):
+   summ = number1 + number2
+   return summ
+
+testEqual(add(1, 2), 3)
+testEqual(reduce(1, 3, add), 6)
+
+print "1---"
+
+def parse2(expression, onParsed):
+    size = len(expression)
+    index = 0
+    operator = " "
+    number1 = 0
+    number2 = 0
+    while index < size:
+        if 47 < ord(expression[index]) and ord(expression[index]) < 58:
+            character = int(expression[index])
+            if operator == " ":
+                number1 = number1 * 10 + character
+            else:
+                number2 = number2 * 10 + character
+        else:
+            operator = expression[index]
+        index = index + 1
+    onParsed(number1, number2, operator)
+
+onParsedWasCalled = False
+returnedNumber1 = 0
+returnedNumber2 = 0
+returnedOperator = ""
+def onParsedTest(number1, number2, operator):
+    global onParsedWasCalled
+    global returnedNumber1
+    global returnedNumber2
+    global returnedOperator
+    onParsedWasCalled = True
+    returnedNumber1 = number1
+    returnedNumber2 = number2
+    returnedOperator = operator
+
+    
+
+parse2("2*3", onParsedTest)
+
+if onParsedWasCalled and returnedNumber1 == 2 and returnedNumber2 == 3 and returnedOperator == "*":
+    print "works"
+else:
+    print "failed"
+
+
+
+    
+print "---"
+
+funcWasCalled = False
+def func(a, b, c, d):
+    global funcWasCalled
+    funcWasCalled = True
+
+def callFunc():
+    func(1, 2, 3, 4)
+
+callFunc()
+if funcWasCalled:
+    print "passed"
+else:
+    print "failed"
+    
+
+testEqual(evaluate("2+2"), 4)
+testEqual(evaluate("2*3"), 6)
+testEqual(evaluate("22-10"), None)
+
+
+print "2---"
+
+def f2():
+    print "f2"
+
+def f1(f):
+    print "f1 started"
+    f()
+    print "f1 finished"
+
+f1(f2)
+
+def parseTokens(expression, onNumber, onOperator):
+    index = 0
+    number = 0
+    operator = ""
+    while index < len(expression):
+        character = expression[index]
+        print "character == " + character
+        isDigit = 47 < ord(character) < 58
+        print "isDigit == " + str(isDigit)
+        if isDigit:
+            if operator == "":
+                number = number*10 + int(character)
+                print "added digit. number == " + str(number)
+            else:
+                print "operator == " + operator
+                onOperator(operator)
+                operator = ""
+                number = int(character)  
+        else:
+            if number != 0:
+                print "number == " + str(number)
+                onNumber(number)
+                number = 0
+                operator = character
+            else:
+                operator = operator + character
+               
+        index = index + 1
+    if operator == "":
+        onNumber(number)
+    else:
+        onOperator(operator)
+
+
+
+
+onNumberWasCalled = False
+onNumberTestArgument1 = None
+onNumberTestArgument2 = None
+
+def onNumberTest(number):
+    global onNumberWasCalled
+    global onNumberTestArgument1
+    global onNumberTestArgument2
+    onNumberWasCalled = True
+    print "onNumberTestArgument1 == " + str(onNumberTestArgument1)
+    if onNumberTestArgument1 == None:
+         onNumberTestArgument1 = number
+        
+    else:
+        onNumberTestArgument2 = number
+        print onNumberTestArgument2
+               
+onOperatorWasCalled = False
+onOperatorTestArgument = None
+def onOperatorTest(operator):
+    global onOperatorWasCalled
+    global onOperatorTestArgument
+    onOperatorWasCalled = True
+    onOperatorTestArgument = operator
+
+parseTokens("23+45", onNumberTest, onOperatorTest)
+
+print onNumberTestArgument1, onNumberTestArgument2, onOperatorTestArgument
+if onNumberWasCalled and onOperatorWasCalled and onNumberTestArgument1 == 23 and onNumberTestArgument2 == 45 and onOperatorTestArgument == "+":
+    print "works"
+else:
+    print "failed"
