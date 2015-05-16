@@ -132,3 +132,62 @@ def evaluate(expression):
     return calculate(number1, number2, operator)
 
 testEqual(evaluate("2*3"), 6)
+
+print "------"
+
+def symbolIsLetter(symbol):
+    return ord("a") <= ord(symbol) <= ord("z") or ord("A") <= ord(symbol) <= ord("Z")
+
+testEqual(symbolIsLetter("a"), True)
+testEqual(symbolIsLetter("1"), False)
+
+# Problem: count number of words in a string. Word is a sequence of letters.
+# Usually when building a parsing algorithm
+# its convinient to use special End-Of-String character.
+
+def countWords(string):
+    index = 0
+    lettersInWord = 0
+    wordsNumber = 0
+    while index <= len(string):
+        if index == len(string):
+            character = None
+        else:
+            character = string[index]
+        
+        if character != None and symbolIsLetter(character):
+            lettersInWord = lettersInWord + 1
+            
+        else:
+            if lettersInWord != 0:
+                wordsNumber = wordsNumber + 1
+            lettersInWord = 0
+
+        index = index + 1
+        
+    return wordsNumber
+
+testEqual(countWords("Word is a sequence of letters"), 6)
+
+print "---"
+
+# Problem: check that braces are paired correctly.
+
+def checkBraces(string):
+    index = 0
+    bracesNumber = 0
+    while index < len(string) and bracesNumber >= 0:
+        character = string[index]
+        if character == "(":
+            bracesNumber = bracesNumber + 1
+        elif character == ")":
+            bracesNumber = bracesNumber - 1
+            
+        index = index + 1
+        
+    return bracesNumber == 0
+
+
+testEqual(checkBraces("(2+3)*(3+(4-1))"), True)
+testEqual(checkBraces("(2+3)*(3+(4-1)"), False)
+testEqual(checkBraces(")2+3))*((3+4-1)"), False)
