@@ -143,7 +143,7 @@ testEqual(symbolIsLetter("1"), False)
 
 # Problem: count number of words in a string. Word is a sequence of letters.
 # Usually when building a parsing algorithm
-# its convinient to use special End-Of-String character.
+# it's convinient to use special End-Of-String character.
 
 def countWords(string):
     index = 0
