@@ -69,3 +69,72 @@ def getNumber(container, index):
     return container[index]
 
 testEqual(getMax([42, 1989, 2015, 33], getNumber, len), 2015)
+
+
+print "---"
+
+# Problem: make a dictionary interface based on a list.
+
+# 1. create dictionary
+# 2. insert entry
+# 3. find entry by key
+
+def createDictionary():
+    return []
+
+def insertEntry(dictionary, key, value):
+    index = 0
+    existingIndex = None
+    while index < len(dictionary):
+        if dictionary[index] == key:
+            existingIndex = index
+            break
+        index = index + 1
+        
+    if existingIndex == None:
+        dictionary.append(key)
+        dictionary.append(value)
+    else:
+        dictionary[existingIndex+1] = value
+
+def getEntry(dictionary, key):
+    index = 0
+    value = None
+    while index < len(dictionary):
+        if dictionary[index] == key:
+           value = dictionary[index+1]
+           break
+        index = index + 2
+
+    return value
+
+
+dictionary = createDictionary()
+
+insertEntry(dictionary, "apple", "fruit")
+testEqual(getEntry(dictionary, "apple"), "fruit")
+
+insertEntry(dictionary, "apple", "non-vegetable")
+testEqual(getEntry(dictionary, "apple"), "non-vegetable")
+
+insertEntry(dictionary, "tomato", "vegetable")
+testEqual(getEntry(dictionary, "tomato"), "vegetable")
+
+testEqual(getEntry(dictionary, "orange"), None)
+
+d = createDictionary()
+insertEntry(d, 42, "fourty two")
+insertEntry(d, 9, "nine")
+insertEntry(d, 1, "one")
+
+def printHello():
+    print "Hello!"
+
+def printGoodBye():
+    print "Good bye!"
+
+insertEntry(d, "bye", printGoodBye)
+insertEntry(d, "hello", printHello)
+
+doSomething = getEntry(d, "hello")
+doSomething()
