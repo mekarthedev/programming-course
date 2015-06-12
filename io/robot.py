@@ -74,20 +74,20 @@ DIRECTION_LEFT = 2
 DIRECTION_UP = 3
 DIRECTION_DOWN = 4
 
-def drawBorder(canvas):
+def drawBorder(canvas, x, y, width, height):
 
    # drawing border top and bottom      
-   xCanvas = 1
-   while xCanvas < getCanvasWidth(canvas) - 1:
-      setSymbolAtPoint(canvas, xCanvas, 0, "_")
-      setSymbolAtPoint(canvas, xCanvas, getCanvasHeight(canvas) - 1, "-")
+   xCanvas = x + 1
+   while xCanvas < x + width - 1:
+      setSymbolAtPoint(canvas, xCanvas, y, "_")
+      setSymbolAtPoint(canvas, xCanvas, y + height - 1, "-")
       xCanvas = xCanvas + 1
 
    # drawing border sides
-   yCanvas = 1   
-   while yCanvas < getCanvasHeight(canvas) - 1:
-      setSymbolAtPoint(canvas, 0, yCanvas, "|")
-      setSymbolAtPoint(canvas, getCanvasWidth(canvas) - 1, yCanvas, "|")
+   yCanvas = y + 1
+   while yCanvas < y + height - 1:
+      setSymbolAtPoint(canvas, x, yCanvas, "|")
+      setSymbolAtPoint(canvas, x + width - 1, yCanvas, "|")
       yCanvas = yCanvas + 1
 
 def clearCanvas(canvas):
@@ -99,11 +99,11 @@ def clearCanvas(canvas):
          xCanvas = xCanvas + 1
       yCanvas = yCanvas + 1
 
-def drawCells(canvas):
-   yCanvas = 1   
-   while yCanvas < getCanvasHeight(canvas) - 1:
-      xCanvas = 2
-      while xCanvas < getCanvasWidth(canvas) - 1:
+def drawCells(canvas, x, y, width, height):
+   yCanvas = y
+   while yCanvas < y + height:
+      xCanvas = x + 1
+      while xCanvas < x + width - 1:
          setSymbolAtPoint(canvas, xCanvas, yCanvas, ".")
          xCanvas = xCanvas + 2
       yCanvas = yCanvas + 1
@@ -117,15 +117,13 @@ def drawRobot(canvas, x, y, direction):
       robotSymbol = "^"
    elif direction == DIRECTION_DOWN:
       robotSymbol = "v"
-   setSymbolAtPoint(canvas, 2*x + 2, y + 1, robotSymbol)
+   setSymbolAtPoint(canvas, x, y, robotSymbol)
 
-def drawField(width, height, x, y, direction):
-   canvas = createCanvas(width*2 + 3, height + 2)
-   clearCanvas(canvas)  
-   drawBorder(canvas)
-   drawCells(canvas)
-   drawRobot(canvas, x, y, direction)
-   printCanvas(canvas)
+def drawField(canvas, x, y, width, height):
+   borderWidth = 2*width + 3
+   borderHeight = height + 2
+   drawBorder(canvas, x, y, borderWidth, borderHeight)
+   drawCells(canvas, x + 1, y + 1, borderWidth - 2, borderHeight - 2)
 
 def printCanvas(canvas):
    y = 0
@@ -138,4 +136,9 @@ def printCanvas(canvas):
       print row
       y = y + 1
 
-drawField(4, 4, 1, 2, DIRECTION_UP)
+canvas = createCanvas(50, 25)
+clearCanvas(canvas)
+drawBorder(canvas, 0, 0, getCanvasWidth(canvas), getCanvasHeight(canvas))
+drawField(canvas, 10, 15, 4, 4)
+drawRobot(canvas, 14, 18, DIRECTION_UP)
+printCanvas(canvas)
