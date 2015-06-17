@@ -67,12 +67,23 @@ testEqual(getCanvasHeight(canvas), 4)
 setSymbolAtPoint(canvas, 1, 2, ".")
 testEqual(getSymbolAtPoint(canvas, 1, 2), ".")
 
+def printCanvas(canvas):
+   y = 0
+   while y < getCanvasHeight(canvas):
+      x = 0
+      row = ""
+      while x < getCanvasWidth(canvas):
+         row = row + str(getSymbolAtPoint(canvas, x, y))
+         x = x + 1
+      print row
+      y = y + 1
+
 # Draw scene
 
-DIRECTION_RIGHT = 1
-DIRECTION_LEFT = 2
-DIRECTION_UP = 3
-DIRECTION_DOWN = 4
+DIRECTION_RIGHT = "DIRECTION_RIGHT"
+DIRECTION_LEFT = "DIRECTION_LEFT"
+DIRECTION_UP = "DIRECTION_UP"
+DIRECTION_DOWN = "DIRECTION_DOWN"
 
 def drawBorder(canvas, x, y, width, height):
 
@@ -125,20 +136,71 @@ def drawField(canvas, x, y, width, height):
    drawBorder(canvas, x, y, borderWidth, borderHeight)
    drawCells(canvas, x + 1, y + 1, borderWidth - 2, borderHeight - 2)
 
-def printCanvas(canvas):
-   y = 0
-   while y < getCanvasHeight(canvas):
-      x = 0
-      row = ""
-      while x < getCanvasWidth(canvas):
-         row = row + str(getSymbolAtPoint(canvas, x, y))
-         x = x + 1
-      print row
-      y = y + 1
+def cellPositionInPixels(robotX, robotY, fieldX, fieldY):
+   return (fieldX + 2 + 2*robotX, fieldY + 1 + robotY)
+   
+testEqual(cellPositionInPixels(1, 2, 10, 15), (14, 18))
 
-canvas = createCanvas(50, 25)
-clearCanvas(canvas)
-drawBorder(canvas, 0, 0, getCanvasWidth(canvas), getCanvasHeight(canvas))
-drawField(canvas, 10, 15, 4, 4)
-drawRobot(canvas, 14, 18, DIRECTION_UP)
-printCanvas(canvas)
+def fieldSizeInPixels(width, height):
+   return (2 * width + 3, height + 2)
+
+testEqual(fieldSizeInPixels(4, 3), (11, 5))
+
+def drawScene(fieldWidth, fieldHeight, robotX, robotY, robotDirection):
+   (canvasWidth, canvasHeight) = fieldSizeInPixels(fieldWidth, fieldHeight)
+   canvas = createCanvas(canvasWidth, canvasHeight)
+   clearCanvas(canvas)
+   drawField(canvas, 0, 0, fieldWidth, fieldHeight)
+   (robotXInPixels, robotYInPixels) = cellPositionInPixels(robotX, robotY, 0, 0)
+   drawRobot(canvas, robotXInPixels, robotYInPixels, robotDirection)
+   printCanvas(canvas)
+
+
+
+# Robot model
+
+def createRobot(initialX, initialY, initialDirection):
+   return [initialX, initialY, initialDirection]
+
+def getRobotPosition(robot):
+   return (robot[0], robot[1])
+
+def getRobotDirection(robot):
+   return robot[2]
+
+def rotateRobot(robot, angle):
+   pass
+
+robot = createRobot(1, 2, DIRECTION_DOWN)
+testEqual(getRobotPosition(robot), (1, 2))
+testEqual(getRobotDirection(robot), DIRECTION_DOWN)
+
+print "---"
+
+rotateRobot(robot, 180)
+testEqual(getRobotDirection(robot), DIRECTION_UP)
+rotateRobot(robot, 90)
+testEqual(getRobotDirection(robot), DIRECTION_RIGHT)
+rotateRobot(robot, 180)
+testEqual(getRobotDirection(robot), DIRECTION_LEFT)
+rotateRobot(robot, -90)
+testEqual(getRobotDirection(robot), DIRECTION_DOWN)
+
+
+
+#robot = createRobot(0, 0, DIRECTION_DOWN)
+#(robotX, robotY) = getRobotPosition(robot)
+#robotDirection = getRobotDirection(robot)
+#drawScene(11, 11, robotX, robotY, robotDirection)
+
+#moveRobot(robot, 3)
+#(robotX, robotY) = getRobotPosition(robot)
+#robotDirection = getRobotDirection(robot)
+#drawScene(11, 11, robotX, robotY, robotDirection)
+
+#rotateRobot(robot, 180)
+#(robotX, robotY) = getRobotPosition(robot)
+#robotDirection = getRobotDirection(robot)
+#drawScene(11, 11, robotX, robotY, robotDirection)
+
+
