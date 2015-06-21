@@ -23,6 +23,8 @@
 # move 4, rotate +90, help, ?, exit, quit
 # m4 cw90 exit help ?
 
+import math
+
 def testEqual(actualResult, expectedResult):
    if actualResult == expectedResult:
       print "passed"
@@ -80,11 +82,6 @@ def printCanvas(canvas):
 
 # Draw scene
 
-DIRECTION_RIGHT = "DIRECTION_RIGHT"
-DIRECTION_LEFT = "DIRECTION_LEFT"
-DIRECTION_UP = "DIRECTION_UP"
-DIRECTION_DOWN = "DIRECTION_DOWN"
-
 def drawBorder(canvas, x, y, width, height):
 
    # drawing border top and bottom      
@@ -120,16 +117,23 @@ def drawCells(canvas, x, y, width, height):
       yCanvas = yCanvas + 1
 
 def drawRobot(canvas, x, y, direction):
-   if direction == DIRECTION_RIGHT:
+   if direction % 360 == 90:
       robotSymbol = ">"
-   elif direction == DIRECTION_LEFT:
+   elif direction % 360 == 270:
       robotSymbol = "<"
-   elif direction == DIRECTION_UP:
+   elif direction % 360 == 0:
       robotSymbol = "^"
-   elif direction == DIRECTION_DOWN:
+   elif direction % 360 == 180:
       robotSymbol = "v"
    setSymbolAtPoint(canvas, x, y, robotSymbol)
 
+print "****"
+canvas = createCanvas(10, 10)
+drawRobot(canvas, 1, 2, 90)
+testEqual(getSymbolAtPoint(canvas, 1, 2), ">")
+drawRobot(canvas, 1, 2, -9090)
+testEqual(getSymbolAtPoint(canvas, 1, 2), "<")
+   
 def drawField(canvas, x, y, width, height):
    borderWidth = 2*width + 3
    borderHeight = height + 2
@@ -156,7 +160,6 @@ def drawScene(fieldWidth, fieldHeight, robotX, robotY, robotDirection):
    printCanvas(canvas)
 
 
-
 # Robot model
 
 def createRobot(initialX, initialY, initialDirection):
@@ -169,38 +172,67 @@ def getRobotDirection(robot):
    return robot[2]
 
 def rotateRobot(robot, angle):
-   pass
+   robot[2] = (angle + getRobotDirection(robot)) % 360
 
-robot = createRobot(1, 2, DIRECTION_DOWN)
+def moveRobot(robot, distance):
+   robot[0] = int(round(robot[0] + distance * math.sin(math.radians(robot[2]))))
+   robot[1] = int(round(robot[1] - distance * math.cos(math.radians(robot[2]))))
+   
+robot = createRobot(1, 2, 180)
 testEqual(getRobotPosition(robot), (1, 2))
-testEqual(getRobotDirection(robot), DIRECTION_DOWN)
+testEqual(getRobotDirection(robot), 180)
 
 print "---"
 
+robot = createRobot(1, 2, 180)
 rotateRobot(robot, 180)
-testEqual(getRobotDirection(robot), DIRECTION_UP)
+testEqual(getRobotDirection(robot) % 360, 0)
 rotateRobot(robot, 90)
-testEqual(getRobotDirection(robot), DIRECTION_RIGHT)
+testEqual(getRobotDirection(robot) % 360, 90)
 rotateRobot(robot, 180)
-testEqual(getRobotDirection(robot), DIRECTION_LEFT)
+testEqual(getRobotDirection(robot) % 360, 270)
 rotateRobot(robot, -90)
-testEqual(getRobotDirection(robot), DIRECTION_DOWN)
+testEqual(getRobotDirection(robot) % 360, 180)
+
+print "---"
+
+robot = createRobot(1, 2, 0)
+moveRobot(robot, 1)
+testEqual(getRobotPosition(robot), (1, 1))
+
+rotateRobot(robot, 90)
+moveRobot(robot, 2)
+testEqual(getRobotPosition(robot), (3, 1))
+
+rotateRobot(robot, 180)
+moveRobot(robot, 1)
+testEqual(getRobotPosition(robot), (2, 1))
+
+rotateRobot(robot, -90)
+moveRobot(robot, 2)
+testEqual(getRobotPosition(robot), (2, 3))
+
+rotateRobot(robot, 30)
+moveRobot(robot, 50)
+testEqual(getRobotPosition(robot), (-23, 46))
 
 
+robot = createRobot(0, 0, 180)
+(robotX, robotY) = getRobotPosition(robot)
+robotDirection = getRobotDirection(robot)
+drawScene(11, 11, robotX, robotY, robotDirection)
 
-#robot = createRobot(0, 0, DIRECTION_DOWN)
-#(robotX, robotY) = getRobotPosition(robot)
-#robotDirection = getRobotDirection(robot)
-#drawScene(11, 11, robotX, robotY, robotDirection)
+moveRobot(robot, 3)
+(robotX, robotY) = getRobotPosition(robot)
+robotDirection = getRobotDirection(robot)
+drawScene(11, 11, robotX, robotY, robotDirection)
 
-#moveRobot(robot, 3)
-#(robotX, robotY) = getRobotPosition(robot)
-#robotDirection = getRobotDirection(robot)
-#drawScene(11, 11, robotX, robotY, robotDirection)
+rotateRobot(robot, -90)
+(robotX, robotY) = getRobotPosition(robot)
+robotDirection = getRobotDirection(robot)
+drawScene(11, 11, robotX, robotY, robotDirection)
 
-#rotateRobot(robot, 180)
-#(robotX, robotY) = getRobotPosition(robot)
-#robotDirection = getRobotDirection(robot)
-#drawScene(11, 11, robotX, robotY, robotDirection)
-
-
+moveRobot(robot, 4)
+(robotX, robotY) = getRobotPosition(robot)
+robotDirection = getRobotDirection(robot)
+drawScene(11, 11, robotX, robotY, robotDirection)
