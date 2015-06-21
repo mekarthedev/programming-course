@@ -138,3 +138,31 @@ insertEntry(d, "hello", printHello)
 
 doSomething = getEntry(d, "hello")
 doSomething()
+
+#
+
+# 1, 2, 3, 4, 5; 3 -> 4, 5, 1, 2, 3
+
+def rotateArray(array, startIndex):
+   rotatedArray = []
+   index = startIndex
+   while index < len(array):
+      rotatedArray.append(array[index])
+      index = index + 1
+   index = 0
+   while index < startIndex:
+      rotatedArray.append(array[index])
+      index = index + 1
+   return rotatedArray
+
+testEqual(rotateArray([1, 2, 3, 4, 5], 3), [4, 5, 1, 2, 3])
+
+def rotateArray2(array, startIndex):
+   rotatedArray = []
+   index = startIndex
+   while index < startIndex + len(array):
+      rotatedArray.append(array[index%len(array)])
+      index = index + 1
+   return rotatedArray
+   
+testEqual(rotateArray2([1, 2, 3, 4, 5], 3), [4, 5, 1, 2, 3])
