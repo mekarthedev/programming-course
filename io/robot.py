@@ -163,7 +163,7 @@ def drawScene(fieldWidth, fieldHeight, robotX, robotY, robotDirection):
 # Robot model
 
 def createRobot(initialX, initialY, initialDirection):
-   return [initialX, initialY, initialDirection]
+   return [initialX, initialY, initialDirection, []]
 
 def getRobotPosition(robot):
    return (robot[0], robot[1])
@@ -173,10 +173,22 @@ def getRobotDirection(robot):
 
 def rotateRobot(robot, angle):
    robot[2] = (angle + getRobotDirection(robot)) % 360
+   notifyRobotSubscribers(robot)
 
 def moveRobot(robot, distance):
    robot[0] = int(round(robot[0] + distance * math.sin(math.radians(robot[2]))))
    robot[1] = int(round(robot[1] - distance * math.cos(math.radians(robot[2]))))
+   notifyRobotSubscribers(robot)
+   
+def subscribeToRobotStateChange(robot, stateChangeHandler):
+   robot[3].append(stateChangeHandler)
+
+def notifyRobotSubscribers(robot):
+   if robot[3] != []:
+      elementNumber = 0
+      while elementNumber < len(robot[3]):
+         robot[3][elementNumber](robot)
+         elementNumber = elementNumber + 1
    
 robot = createRobot(1, 2, 180)
 testEqual(getRobotPosition(robot), (1, 2))
@@ -216,23 +228,63 @@ rotateRobot(robot, 30)
 moveRobot(robot, 50)
 testEqual(getRobotPosition(robot), (-23, 46))
 
+print "---"
+
+direction = None
+position = None
+publishingRobot = None
+def onTestRobotChange(robot):
+   global direction
+   global position
+   global publishingRobot
+   direction = getRobotDirection(robot)
+   position = getRobotPosition(robot)
+   publishingRobot = robot
+   
+robot1 = createRobot(1, 2, 0)
+subscribeToRobotStateChange(robot1, onTestRobotChange)
+rotateRobot(robot1, 90)
+testEqual(direction, 90)
+testEqual(publishingRobot, robot1)
+
+robot2 = createRobot(1, 2, 90)
+subscribeToRobotStateChange(robot2, onTestRobotChange)
+moveRobot(robot2, 42)
+testEqual(position, (43, 2))
+testEqual(publishingRobot, robot2)
+
+#
+
+import time
+
+def drawRobotState(robot):
+   (robotX, robotY) = getRobotPosition(robot)
+   robotDirection = getRobotDirection(robot)
+   drawScene(44, 44, robotX, robotY, robotDirection)
+   time.sleep(0.25)
+
 
 robot = createRobot(0, 0, 180)
-(robotX, robotY) = getRobotPosition(robot)
-robotDirection = getRobotDirection(robot)
-drawScene(11, 11, robotX, robotY, robotDirection)
-
-moveRobot(robot, 3)
-(robotX, robotY) = getRobotPosition(robot)
-robotDirection = getRobotDirection(robot)
-drawScene(11, 11, robotX, robotY, robotDirection)
-
+drawRobotState(robot)
+subscribeToRobotStateChange(robot, drawRobotState)
+moveRobot(robot, 1)
+moveRobot(robot, 1)
+moveRobot(robot, 1)
 rotateRobot(robot, -90)
-(robotX, robotY) = getRobotPosition(robot)
-robotDirection = getRobotDirection(robot)
-drawScene(11, 11, robotX, robotY, robotDirection)
-
-moveRobot(robot, 4)
-(robotX, robotY) = getRobotPosition(robot)
-robotDirection = getRobotDirection(robot)
-drawScene(11, 11, robotX, robotY, robotDirection)
+moveRobot(robot, 1)
+moveRobot(robot, 1)
+moveRobot(robot, 1)
+moveRobot(robot, 1)
+rotateRobot(robot, 90)
+moveRobot(robot, 1)
+moveRobot(robot, 1)
+moveRobot(robot, 1)
+moveRobot(robot, 1)
+rotateRobot(robot, 90)
+moveRobot(robot, 1)
+rotateRobot(robot, 90)
+moveRobot(robot, 1)
+rotateRobot(robot, 90)
+moveRobot(robot, 1)
+rotateRobot(robot, 90)
+moveRobot(robot, 1)
